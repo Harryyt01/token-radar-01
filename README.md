@@ -64,6 +64,35 @@ Every response is shape-checked before use.
 
 See [CHANGELOG-V2.md](CHANGELOG-V2.md) for what changed vs V1 and the known limits.
 
+### Screenshots (V2, 1440×900)
+
+Real renders of the live app, with real data from GeckoTerminal/DexScreener
+fetched at capture time. The freshness label on each view shows the snapshot
+age honestly — nothing here is a mockup or simulated data.
+
+![V2 Overview](v2/screenshots/1-overview.png)
+
+**1 — Overview.** The home view: the hero, live stat cards (58 trending
+tokens, $94.1M 24h volume tracked, 37 gainers / 21 losers, 3 networks) and
+the top trending token cards — price, 24h change, market cap, liquidity,
+24h volume, age, contract address and risk status on every card.
+
+![V2 Live Radar](v2/screenshots/2-live-radar.png)
+
+**2 — Live Radar.** The animated canvas radar: every bubble is a real token
+from the live trending feed. Bubble size = 24h volume, colour = 24h change,
+pulsing ring = launched in the last hour. Labels are readable with no
+overlap (at most 2 per cluster); tap a bubble for its detail panel. The
+freshness line under the radar shows the data age ("GeckoTerminal · 6m ago").
+
+![V2 Trending Tokens](v2/screenshots/3-trending.png)
+
+**3 — Trending Tokens.** The full trending list: filter pills (All trending /
+Biggest gainers / Biggest losers / Highest volume), token cards with price,
+market cap, liquidity, 24h volume, age, contract address and risk status,
+plus Watch and Details on every card. The detail panel (not shown) opens a
+live candle chart and the GoPlus security table for the selected token.
+
 ## V1 — Pre-Token Protocol Radar (the make.fun entry)
 
 The radar scores every pre-token protocol in the sealed snapshot and ranks it by
