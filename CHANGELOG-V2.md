@@ -36,9 +36,15 @@ Explorer as the "Pre-Token Board", labelled as model data from 2026-11-14.
   flashed as an alarming banner. The boundary now ignores that message.
 - **Stale cached JavaScript after deploys** — a re-check kept showing the old
   behaviour even after the fixes were live, because the browser/CDN served
-  cached JS. Asset URLs in `v2/index.html` are now versioned (`?v=3`) so a
-  deploy always fetches fresh files. (Verified: the new code was already live
-  in the files — the browser was running a cached copy.)
+  cached JS. Asset URLs in `v2/index.html` are now versioned (`?v=3`, then
+  `?v=4`) so a deploy always fetches fresh files. (Verified: the new code was
+  already live in the files — the browser was running a cached copy.)
+- **Radar labels still crowded in dense clusters** — collision avoidance alone
+  left 26–28 labels on screen (boxes rarely overlapped even when bubbles
+  piled up). Labels are now limited to the 12 largest bubbles (highest 24h
+  volume) plus the collision check, so a dense cluster shows 1–2 readable
+  labels; every bubble stays hoverable/clickable for its name. Verified by
+  rendering the radar with real live data: 11 labels, zero overlaps.
 
 ### New features
 
