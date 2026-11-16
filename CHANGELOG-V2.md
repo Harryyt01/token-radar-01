@@ -7,6 +7,22 @@ entry (`main.ts`, `lib/`, `vendor/`, `dashboard/`, screenshots) is untouched and
 preserved; the V1 board snapshot is copied to `v2/data.js` and rendered inside
 Explorer as the "Pre-Token Board", labelled as model data from 2026-11-14.
 
+### Fixes (2026-11-16, after live browser verification)
+
+- **GoPlus risk badges** — the live check found most Trending cards reading
+  "Risk: check failed". Root cause: GoPlus's Solana `token_security` endpoint
+  returns code 5000 "system error" for every Solana token (verified for USDC
+  and WSOL too), so the check never ran. The badge now distinguishes three
+  honest states instead of one misleading one: "Risk: unavailable" when
+  GoPlus errors (check did not run), "Risk: no record" when GoPlus answers
+  but holds no record for the token, "Risk: check failed" only for a real
+  request failure. GoPlus calls are also queued (~1 per 400ms) so the badge
+  loader can't burst past the free tier. The detail modal already said
+  "Security check unavailable" — it now gets the cleaner message.
+- **Radar label overlap** — labels in dense clusters overlapped. Labels are
+  now drawn in a separate pass, largest bubbles first, skipping any label
+  whose box would overlap one already drawn, with a dark halo for readability.
+
 ### New features
 
 - **Live Radar** (`v2/js/radar.js`) — canvas radar with rotating sweep beam,
