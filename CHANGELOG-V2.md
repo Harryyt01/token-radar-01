@@ -23,6 +23,23 @@ Explorer as the "Pre-Token Board", labelled as model data from 2026-11-14.
   now drawn in a separate pass, largest bubbles first, skipping any label
   whose box would overlap one already drawn, with a dark halo for readability.
 
+### Fixes (2026-11-16, second round — after a stale-cache re-check)
+
+- **Freshness labels stuck on "Not loaded yet"** — the freshness line was a
+  static snapshot taken when the panel was built (before the data arrived),
+  so it never updated. Freshness lines are now live: each carries its panel
+  key and a 10s timer refreshes every visible label (source + age), so it
+  flips to e.g. "GeckoTerminal · 12s ago" once the data lands.
+- **ResizeObserver warning shown as an error banner** — the benign browser
+  warning "ResizeObserver loop completed with undelivered notifications"
+  (a layout warning, not an app error) was caught by the error boundary and
+  flashed as an alarming banner. The boundary now ignores that message.
+- **Stale cached JavaScript after deploys** — a re-check kept showing the old
+  behaviour even after the fixes were live, because the browser/CDN served
+  cached JS. Asset URLs in `v2/index.html` are now versioned (`?v=3`) so a
+  deploy always fetches fresh files. (Verified: the new code was already live
+  in the files — the browser was running a cached copy.)
+
 ### New features
 
 - **Live Radar** (`v2/js/radar.js`) — canvas radar with rotating sweep beam,
