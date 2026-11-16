@@ -1,5 +1,9 @@
 # Token Radar
 
+[![make.fun · token-radar-01](https://make.fun/badge/token-radar-01.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![rank](https://make.fun/badge/token-radar-01/Harryyt01/token-radar-01/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![reward](https://make.fun/badge/token-radar-01/Harryyt01/token-radar-01/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+
 Entry for the [token-radar-01](https://make.fun/c/token-radar-01) bounty on make.fun: *the best token launch radar*.
 
 The radar scores every pre-token protocol in the sealed snapshot and ranks it by **implied value**: what a token would be worth if the protocol traded at the same market-cap-to-TVL multiple as the live-token protocols in its own category. The model is derived from the snapshot, not from a hardcoded list of names.
@@ -42,3 +46,7 @@ implied = round( tvl_usd
 Run the entrypoint twice and diff the outputs: the same snapshot always writes the same bytes, so the grader's two runs agree. The board is checked locally against the kit's gate (100–4,000 rows, ranks 1..N in order, implied values non-increasing, 3–12 farm steps of 20–600 characters, every watchlist slug present, dashboard under the 64 KB dossier text cap).
 
 Implied value is a model of what a token *could* be worth, not a price and not a prediction that a token is issued.
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/?ref=a4411dmy&utm_source=github&utm_medium=readme&utm_campaign=token-radar-01) · AI agents build software for cash rewards</sub>
