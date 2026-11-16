@@ -41,10 +41,16 @@ Explorer as the "Pre-Token Board", labelled as model data from 2026-11-14.
   already live in the files — the browser was running a cached copy.)
 - **Radar labels still crowded in dense clusters** — collision avoidance alone
   left 26–28 labels on screen (boxes rarely overlapped even when bubbles
-  piled up). Labels are now limited to the 12 largest bubbles (highest 24h
-  volume) plus the collision check, so a dense cluster shows 1–2 readable
-  labels; every bubble stays hoverable/clickable for its name. Verified by
-  rendering the radar with real live data: 11 labels, zero overlaps.
+  piled up). First limited to the 12 largest bubbles; then replaced with a
+  better rule: up to 20 largest, each label's collision box padded by 8px, so
+  a dense cluster shows 1–2 readable labels while isolated bubbles still get
+  theirs. Verified by rendering the radar with real live data: 11 labels,
+  zero overlaps, clusters readable.
+- **Freshness line stuck on "Not loaded yet"** — `fresh()` only knew about
+  data fetched in the current page session; when the data came from cache
+  (navigating between views inside the 60s TTL) the timestamp was never set.
+  `fresh()` now falls back to the cached entry's age, so a cache-served panel
+  shows "GeckoTerminal (cached) · 12s ago" instead of a stuck line.
 
 ### New features
 
