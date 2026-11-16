@@ -6,11 +6,74 @@
 
 Entry for the [token-radar-01](https://make.fun/c/token-radar-01) bounty on make.fun: *the best token launch radar*.
 
-The radar scores every pre-token protocol in the sealed snapshot and ranks it by **implied value**: what a token would be worth if the protocol traded at the same market-cap-to-TVL multiple as the live-token protocols in its own category. The model is derived from the snapshot, not from a hardcoded list of names.
+## V2 — Live Crypto Launch Intelligence Dashboard
 
-## How it works
+**`v2/` is the current app.** A premium, Apple-style dark dashboard that runs as
+plain static files — no build step, no dependencies, no API keys. Open
+`v2/index.html` in a browser, or serve the folder:
 
-`main.ts` (Node 22, standard library only) reads the sealed snapshot and writes a ranked board to `board.json`, a dashboard to `dashboard/`, and a dossier to `dossier.json`:
+```
+cd v2 && python3 -m http.server 8000
+# open http://localhost:8000/
+```
+
+Nine views: **Overview, Live Radar, New Launches, Trending Tokens, Token
+Explorer, Market Analytics, Watchlist, Risk Scanner, Settings.**
+
+- **Live Radar** — a canvas radar whose bubbles are real tokens from the live
+  trending feed. Bubble size = 24h volume, colour = 24h change, pulsing ring =
+  launched in the last hour. Tap a bubble for its detail panel.
+- **Charts** — canvas candles + volume from GeckoTerminal OHLCV, timeframes
+  1m/5m/15m/1h/4h/24h, line mode, crosshair + tooltip.
+- **Discovery** — new launches (GeckoTerminal new pools), trending pools,
+  biggest gainers/losers and highest volume, computed client-side.
+- **Token Intelligence** — GoPlus contract checks: verification, mint/freeze
+  authority, buy/sell tax, honeypot, holder distribution, liquidity lock
+  status. A risk score and explicit warnings only — no token is ever labelled
+  "Safe".
+- **Watchlist** — saved on the device (localStorage), prices refresh on a timer.
+- **Data honesty** — every panel labels its source and freshness ("DexScreener ·
+  12s ago"). A failed API shows an error state with retry; missing fields show
+  "Unavailable". Nothing is invented: no simulated prices, no fabricated
+  launches. The radar's ambient particles are decorative only.
+
+### Data sources (all free, keyless, client-side)
+
+| Source | Used for | Rate handling |
+|---|---|---|
+| [DexScreener](https://dexscreener.com) | Pair search, token pairs, top boosts, watchlist refresh | 12s timeout, 429 retry once |
+| [GeckoTerminal](https://www.geckoterminal.com) | Trending pools, new pools, OHLCV candles | queued, max ~1 request / 2s |
+| [GoPlus](https://gopluslabs.io) | Token security (honeypot, tax, mint, holders) | cached 10 min |
+
+Caching: in-memory + localStorage with TTLs (30s–10 min depending on endpoint).
+Every response is shape-checked before use.
+
+### Layout
+
+- `v2/index.html` — the shell (sidebar on desktop, bottom nav on mobile)
+- `v2/css/app.css` — glassmorphism dark UI, mobile-first, reduced-motion respected
+- `v2/js/api.js` — API layer (DexScreener / GeckoTerminal / GoPlus)
+- `v2/js/radar.js` — canvas live radar
+- `v2/js/charts.js` — canvas price chart
+- `v2/js/discovery.js` — token cards and discovery lists
+- `v2/js/intelligence.js` — detail modal + risk scanner (GoPlus)
+- `v2/js/watchlist.js` — localStorage watchlist
+- `v2/js/app.js` — hash router, 9 views, settings, toasts, error boundary
+- `v2/data.js` — the v1 board snapshot (DeFiLlama, 2026-11-14), rendered in
+  Explorer as the "Pre-Token Board" and labelled as model data, not live prices
+
+See [CHANGELOG-V2.md](CHANGELOG-V2.md) for what changed vs V1 and the known limits.
+
+## V1 — Pre-Token Protocol Radar (the make.fun entry)
+
+The radar scores every pre-token protocol in the sealed snapshot and ranks it by
+**implied value**: what a token would be worth if the protocol traded at the same
+market-cap-to-TVL multiple as the live-token protocols in its own category. The
+model is derived from the snapshot, not from a hardcoded list of names.
+
+`main.ts` (Node 22, standard library only) reads the sealed snapshot and writes a
+ranked board to `board.json`, a dashboard to `dashboard/`, and a dossier to
+`dossier.json`:
 
 ```
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts --input ../input/snapshot.json
@@ -26,13 +89,20 @@ implied = round( tvl_usd
   × (1 + 0.02 × min(chains, 5)) )
 ```
 
-**Board:** 226 rows — the 40 watchlist protocols (TVL ≥ $50M, no token) plus 186 pre-token protocols below that floor. The 24 live-token protocols are set aside as a comparison table; their market caps are facts, not a model.
+**Board:** 226 rows — the 40 watchlist protocols (TVL ≥ $50M, no token) plus 186
+pre-token protocols below that floor. The 24 live-token protocols are set aside as
+a comparison table; their market caps are facts, not a model.
 
-**Farm plans:** 7 steps per protocol, parameterized by category, chain, TVL-tier capital and age-based hold days, each step with a cost and a time ("Action. Cost: …. Time: ….").
+**Farm plans:** 7 steps per protocol, parameterized by category, chain, TVL-tier
+capital and age-based hold days, each step with a cost and a time ("Action. Cost:
+…. Time: ….").
 
-**Dashboard:** dark navy + amber, 3 files, search, category and chain filters, watchlist-only toggle, pre-token/live tabs, sortable columns, a per-protocol detail dialog with the model's own arithmetic and the protocol's farm plan, and a model explainer showing every sector multiple.
+**Dashboard:** dark navy + amber, 3 files, search, category and chain filters,
+watchlist-only toggle, pre-token/live tabs, sortable columns, a per-protocol
+detail dialog with the model's own arithmetic and the protocol's farm plan, and a
+model explainer showing every sector multiple.
 
-## Layout
+### V1 layout
 
 - `main.ts` — entrypoint: reads the snapshot, writes board.json, data.js, the dashboard, the screenshots and dossier.json
 - `lib/model.ts` — the model, the farm plans and the board issue check
@@ -41,11 +111,16 @@ implied = round( tvl_usd
 - `screenshots/` — board, detail and filtered views of the dashboard
 - `input/` — not committed: the sealed snapshot the grader mounts at /input
 
-## Verification
+### V1 verification
 
-Run the entrypoint twice and diff the outputs: the same snapshot always writes the same bytes, so the grader's two runs agree. The board is checked locally against the kit's gate (100–4,000 rows, ranks 1..N in order, implied values non-increasing, 3–12 farm steps of 20–600 characters, every watchlist slug present, dashboard under the 64 KB dossier text cap).
+Run the entrypoint twice and diff the outputs: the same snapshot always writes
+the same bytes, so the grader's two runs agree. The board is checked locally
+against the kit's gate (100–4,000 rows, ranks 1..N in order, implied values
+non-increasing, 3–12 farm steps of 20–600 characters, every watchlist slug
+present, dashboard under the 64 KB dossier text cap).
 
-Implied value is a model of what a token *could* be worth, not a price and not a prediction that a token is issued.
+Implied value is a model of what a token *could* be worth, not a price and not a
+prediction that a token is issued.
 
 ---
 
