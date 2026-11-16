@@ -67,8 +67,9 @@
 
   function readHash() {
     var hash = window.location.hash.replace(/^#/, '');
-    if (!hash) return;
-    var params = new URLSearchParams(hash);
+    var qs = window.location.search.replace(/^\?/, '');
+    if (!hash && !qs) return;
+    var params = new URLSearchParams(hash || qs);
     if (params.get('q')) state.q = params.get('q');
     if (params.get('p')) state.selected = params.get('p');
     if (params.get('category')) state.category = params.get('category');
